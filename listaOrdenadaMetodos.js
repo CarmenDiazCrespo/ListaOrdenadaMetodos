@@ -2,34 +2,18 @@ var MAX_ELEM_LIST=5; //El máximo de elementos que puede meter son 5
 //Lo pongo como variable global
 //Entiendo que el usuario me mete del 1-5 
 function create(){
-    var list=[];
-    for(var i=0; i<MAX_ELEM_LIST; i++){ //Inicializo con un for porque no se cuantos elementos va a meter el usu
-        list[i]=Number.NaN;
-    }
+    var list =[]; //creamos el array lista inicializado con el máximo de elementos
     return list;
 }
 function isEmpty(list){
-    var isEmpty=false;
-    if(isNaN(list[0])){ //Miro si el primer puesto está vacio, 
-                        //si lo está no hay elementos en el array por lo tanto está vacio entero
-        isEmpty=true;
-    }
-    return isEmpty;
-}
+    return (list.length === 0); //Devuelve true si está vacia
+} 
+
 function isFull(list){
-    var isFull=false;
-    if(!isNaN(list[MAX_ELEM_LIST-1])){ //Si el ultimo puesto no está vacio, es porque está llena entera.
-        isFull=true;
-    }
-    return isFull;
+    return (list.length === MAX_ELEM_LIST); //Devuelve true si la lista esta llena
 }
 function size(list){
-    var length=0;
-    while (length<MAX_ELEM_LIST && !isNaN(list[length])){ //Comprueblo los elementos que están rellenos, pero no
-                                                         // pueden ser más que el máximo de elementos.
-        length++;
-    }
-    return length;
+    return list.length; //Tamaño de la lista
 }
 function add(list, elem){
     var elem= parseInt(elem); //Lo convierto en un entero, el elemento que me han pasado
@@ -44,105 +28,85 @@ function add(list, elem){
     return list.length; 
 }
 function get(list, index){
-    if(index>size(list)){
+    index= parseInt(index);
+    if(index>MAX_ELEM_LIST){
         throw "Indice fuera de límite";
     }
-    return list[index-1];
+    return list[index-1]; //-1 porque el usuario me pasa 1-5
 }
 function toString(list){
-    var str = "";
-    if (!isEmpty(list)){
-        var length = size(list);	
-        for (var i=0; i<length-1;i++){
-            str = str + list[i] + " - "; //Pinta el array separados por guiones
-        } 		 		
-        str = str + list[i]; 		
+    if (isEmpty(list)){
+       throw "La lista esta vacia.";  		
     } 	
-    return str;
+    return list.toString(); //El método toString convierte un array a string y devuelve el resultado.
 }
-function indexOf(list,elem){
+function indexOf(list, elem){
+    elem = parseInt(elem);
     if(isNaN(elem)){
         throw "The element is not a number";
     }
-    var result=-1;//Por defecto lo pongo a -1
-    var i=0;
+    return list.indexOf(elem)+1; //El método busca en el array el elemento especificado y devuelve su posición.
+    //Si no lo encuentra devuelve un -1
+}
 
-    while(i<size(list)){
-        if(list[i]===elem){
-            result=i+1; // Para que el usuario vea del 1-5
-        }
-        i++;
-    }
-    return result;
-}
-function lastIndexOf(list,elem){ //En el ejercicio pone que se quite la función, pero luego pone que la dejemos
-    //si un número se repite tiene sentido que exista la función.
+function lastIndexOf(list, elem){
+    elem = parseInt(elem);
     if(isNaN(elem)){
         throw "The element is not a number";
     }
-    var result=-1;
-    var i=size(list);
-    for(var i=size(list);i>=0;i--){//Recorro a la inversa el array
-        if(list[i]===elem){
-            result=i+1;// Para que el usuario vea del 1-5
-        }
-    }
-    return result;
+    return list.lastIndexOf(elem)+1; //El método lastIndexOf busca en el array el elemento especificado y devuelve su posición.
+    //Si no lo encuentra devuelve un -1
 }
 function capacity(list){
-    return MAX_ELEM_LIST; //La capacidad máxima de elementos de la lista
-}
+    return MAX_ELEM_LIST;
+} 
+
 function clear(list){
     var elem = Number.NaN;
-    if (!isEmpty(list)){
-        var length = size(list);	
-        for (var i=0; i<length;i++){ //Sustituyo cada entero de la lista con un nan
-            list[i] = Number.NaN;
-        } 		 		 		
-    } 
+    if (isEmpty(list)){
+        throw "The list is empty";
+    } 	
+    list.splice(0, list.length); //El método splice agrega / elimina elementos a / desde una matriz 
+    //y devuelve los elementos eliminados.
 }
 function firstElement(list){
     var first;
     if (!isEmpty(list)){
-        first = list[0]; 		
+        first= list.shift(); //Devuelve el primer elemento y lo saca.
+        list.unshift(first); //Vuelvo a meter el elmento en el primer lugar.		
     } else {
         throw "The list is empty.";
     }
     return first;
 } 
+
 function lastElement(list){
     var last;
     if (!isEmpty(list)){
-        last = list[size(list)-1]; 		
+        last=list.pop(); //Extrae el último elemento de la lista y lo devuelve.
+        list.push(last); //Inserta el elemento al final de la lista			
     } else {
         throw "The list is empty.";
     }
     return last;
-}
-function remove(list,index){
-    if(isEmpty(list)){
-        throw "The list is empty";
-    }
+} 
+function remove(list, index){
+    index = parseInt(index);
     if(index>size(list)){
         throw "Indice fuera de límite";
     }
-    var result= list[index-1]; //Guardo el resultado en una variable, resto -1 para que sea de 0-4
-
-    for(var i=index-1; i<size(list);i++){
-        list[i]=list[i+1]; //Voy metiendo el de la posición siguiente
-    }
-    return result;
+    return list.splice(index-1, 1);
 }
-function removeElement(list,elem){
+function removeElement(list, elem){
     var found=false;
     if(isNaN(elem)){
         throw "The element is not a number";
     }
     var i=0;
-    while(i<size(list) && !found){
+    while(i<MAX_ELEM_LIST && !found){
         if(list[i]===elem){
-            found=true; //Para que pare cuando ha encontrado el elemento
-            remove(list,i+1); 
+            found=true; //si lo encuentra se lo pasamos a el método remove
+            remove(list,i+1);
         }
         i++;
     }
